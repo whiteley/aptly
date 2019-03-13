@@ -19,6 +19,7 @@ import (
 	"github.com/aptly-dev/aptly/database"
 	"github.com/aptly-dev/aptly/deb"
 	"github.com/aptly-dev/aptly/files"
+	"github.com/aptly-dev/aptly/gcs"
 	"github.com/aptly-dev/aptly/http"
 	"github.com/aptly-dev/aptly/pgp"
 	"github.com/aptly-dev/aptly/s3"
@@ -361,6 +362,17 @@ func (context *AptlyContext) GetPublishedStorage(name string) aptly.PublishedSto
 			var err error
 			publishedStorage, err = swift.NewPublishedStorage(params.UserName, params.Password,
 				params.AuthURL, params.Tenant, params.TenantID, params.Domain, params.DomainID, params.TenantDomain, params.TenantDomainID, params.Container, params.Prefix)
+			if err != nil {
+				Fatal(err)
+			}
+		} else if strings.HasPrefix(name, "gcs:") {
+			params, ok := context.config().GCSPublishRoots[name[4:]]
+			if !ok {
+				Fatal(fmt.Errorf("published GCS storage %v not configured", name[4:]))
+			}
+
+			var err error
+			publishedStorage, err = gcs.NewPublishedStorage(params.Bucket, params.Prefix)
 			if err != nil {
 				Fatal(err)
 			}

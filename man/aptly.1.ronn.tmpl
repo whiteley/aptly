@@ -87,6 +87,12 @@ Configuration file is stored in JSON format (default values shown below):
           "tenantid": ""
         }
       }
+      "GCSPublishEndpoints": {
+        "test": {
+          "bucket": "repo",
+          "prefix": ""
+        }
+      }
     }
 
 Options:
@@ -157,6 +163,9 @@ Options:
 
   * `SwiftPublishEndpoints`:
     configuration of OpenStack Swift publishing endpoints (see below)
+
+  * `GCSPublishEndpoints`:
+    configuration of Google Cloud Storage (GCS) publishing endpoints (see below)
 
 ## FILESYSTEM PUBLISHING ENDPOINTS
 
@@ -264,6 +273,23 @@ In order to publish to Swift, specify endpoint as `swift:endpoint-name:` before
 publishing prefix on the command line, e.g.:
 
   `aptly publish snapshot jessie-main swift:test:`
+
+## GCS PUBLISHING ENDPOINTS
+
+aptly could be configured to publish repository directly to Google Cloud Storage (GCS). First,
+publishing endpoints should be described in aptly configuration file. Each endpoint has name
+and associated settings:
+
+   * `bucket`:
+     bucket name
+   * `prefix`:
+     (optional) do publishing under specified prefix in the bucket, defaults to
+     no prefix (bucket root)
+
+In order to publish to GCS, specify bucket as `gcs:bucket-name:` before
+publishing prefix on the command line, e.g.:
+
+  `aptly publish snapshot wheezy-main gcs:test:`
 
 ## PACKAGE QUERY
 
