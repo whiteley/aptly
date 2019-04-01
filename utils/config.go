@@ -73,8 +73,9 @@ type SwiftPublishRoot struct {
 
 // GCSPublishRoot describes single GCS publishing entry point
 type GCSPublishRoot struct {
-	Bucket string `json:"bucket"`
-	Prefix string `json:"prefix"`
+	Bucket          string `json:"bucket"`
+	Prefix          string `json:"prefix"`
+	CredentialsFile string `json:"credentialsFile"`
 }
 
 // Config is configuration for aptly, shared by all modules

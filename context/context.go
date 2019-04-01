@@ -365,14 +365,14 @@ func (context *AptlyContext) GetPublishedStorage(name string) aptly.PublishedSto
 			if err != nil {
 				Fatal(err)
 			}
-		} else if strings.HasPrefix(name, "gcs:") {
-			params, ok := context.config().GCSPublishRoots[name[4:]]
+		} else if strings.HasPrefix(name, "gs:") {
+			params, ok := context.config().GCSPublishRoots[name[3:]]
 			if !ok {
-				Fatal(fmt.Errorf("published GCS storage %v not configured", name[4:]))
+				Fatal(fmt.Errorf("published GCS storage %v not configured", name[3:]))
 			}
 
 			var err error
-			publishedStorage, err = gcs.NewPublishedStorage(params.Bucket, params.Prefix)
+			publishedStorage, err = gcs.NewPublishedStorage(params.CredentialsFile, params.Bucket, params.Prefix)
 			if err != nil {
 				Fatal(err)
 			}

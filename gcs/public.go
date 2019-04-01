@@ -13,6 +13,7 @@ import (
 	"github.com/aptly-dev/aptly/utils"
 	"github.com/pkg/errors"
 	"google.golang.org/api/iterator"
+	"google.golang.org/api/option"
 )
 
 // PublishedStorage abstract file system with published files (actually hosted on GCS)
@@ -28,14 +29,31 @@ var (
 	_ aptly.PublishedStorage = (*PublishedStorage)(nil)
 )
 
-// NewPublishedStorage creates published storage from raw gcp credentials
-func NewPublishedStorage(bucketName string, prefix string) (*PublishedStorage, error) {
-	gcs, err := storage.NewClient(context.Background())
+// NewPublishedStorageRaw creates published storage from raw gcp credentials
+func NewPublishedStorageRaw(opts option.ClientOption, bucketName string, prefix string) (*PublishedStorage, error) {
+	gcs, err := storage.NewClient(context.Background(), opts)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to create storage service: %v", err)
 	}
 
 	return &PublishedStorage{gcs, bucketName, prefix, nil}, nil
+}
+
+// NewPublishedStorage creates published storage from gcp credentials
+func NewPublishedStorage(credentialsFile string, bucketName string, prefix string) (*PublishedStorage, error) {
+	var opts option.ClientOption
+	if credentialsFile != "" {
+		opts = option.WithCredentialsFile(credentialsFile)
+	} else {
+		opts = nil
+	}
+
+	publishedStorage, err := NewPublishedStorageRaw(opts, bucketName, prefix)
+	if err != nil {
+		return nil, err
+	}
+
+	return publishedStorage, nil
 }
 
 func (publishedStorage *PublishedStorage) String() string {

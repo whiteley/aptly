@@ -90,7 +90,8 @@ Configuration file is stored in JSON format (default values shown below):
       "GCSPublishEndpoints": {
         "test": {
           "bucket": "repo",
-          "prefix": ""
+          "prefix": "",
+          "credentialsFile": ""
         }
       }
     }
@@ -285,11 +286,14 @@ and associated settings:
    * `prefix`:
      (optional) do publishing under specified prefix in the bucket, defaults to
      no prefix (bucket root)
+   * `credentialsFile`:
+     (optional) Google Cloud credentials to access GCS bucket. If not supplied,
+     Application Default credentials are used.
 
-In order to publish to GCS, specify bucket as `gcs:bucket-name:` before
+In order to publish to GCS, specify bucket as `gs:bucket-name:` before
 publishing prefix on the command line, e.g.:
 
-  `aptly publish snapshot wheezy-main gcs:test:`
+  `aptly publish snapshot wheezy-main gs:test:`
 
 ## PACKAGE QUERY
 
